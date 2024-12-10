@@ -26,6 +26,14 @@ async function loadData() {
         document.getElementById('agama').textContent = data.biodata.Agama;
         document.getElementById('wali').textContent = data.biodata.Wali;
         document.getElementById('noTelepon').textContent = data.biodata.No_Telepon;
+        const photoElement = document.getElementById("patient-photo");
+
+        // Tampilkan gambar pasien
+        if (data.biodata.foto) {
+            photoElement.src = `http://localhost:3000${data.biodata.foto}`;
+        } else {
+            photoElement.alt = "Foto tidak tersedia";
+        }
 
         // Render riwayat penyakit
         const riwayatContainer = document.getElementById('riwayatContainer');
