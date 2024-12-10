@@ -7,7 +7,7 @@ const app = express();
 const db = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "_28Mei2004",  // Ganti dengan password MySQL Anda
+    password: "password",  // Ganti dengan password MySQL Anda
     database: "face"         // Nama database Anda
 });
 
@@ -40,6 +40,6 @@ app.get("/getPerson/:id", (req, res) => {
 });
 
 // Jalankan server
-app.listen(3000, () => {
-    console.log("Server berjalan di http://localhost:3000");
+app.listen(4000, () => {
+    console.log("Server berjalan di http://localhost:4000");
 });

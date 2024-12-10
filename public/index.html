@@ -3,89 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js"></script>
     <title>Teachable Machine Prediction</title>
     <!-- TensorFlow.js -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <!-- Teachable Machine Image Library -->
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        #webcam-container { margin: 20px; }
-        #label-container { margin: 20px; }
-        .error { color: red; }
-    </style>
 </head>
-<body>
-    <h1>Teachable Machine Image Model</h1>
-    <div id="webcam-container"></div>
-    <div id="label-container"></div>
-    <div id="error-message" class="error"></div> <!-- Tempat untuk menampilkan pesan kesalahan -->
+<body class="bg-gray-800 text-gray-700 font-sans px-20 py-20">
+       
+    <div class="container mx-auto p-6 bg-white rounded-xl shadow-md">
+<!-- Hero Section -->
+<section class="relative bg-white">
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <div class="grid grid-cols-1 lg gap-8 items-center py-24">
+    
+  <!-- Hero Section -->
+<section class="relative bg-white min-h-screen flex items-center justify-center">
+<div class="text-center">
+  <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+    Position Your Face
+  </h1>
+  <p class="mt-4 text-lg leading-8 text-gray-800 mx-20">
+    Ensure your face is fully visible within the camera frame. For best results, position yourself in good lighting and avoid wearing accessories like hats or sunglasses.
+  </p>
 
-    <script>
-        let model, webcam, labelContainer, maxPredictions;
-
-        // Fungsi inisialisasi akan otomatis dijalankan saat halaman dimuat
-        window.onload = async function() {
-            const modelURL = "./my_model/model.json"; // Lokasi file model
-            const metadataURL = "./my_model/metadata.json"; // Lokasi file metadata
-
-            try {
-                // Memuat model
-                model = await tmImage.load(modelURL, metadataURL);
-                maxPredictions = model.getTotalClasses();
-
-                // Inisialisasi webcam
-                const flip = true; // Flip kamera jika perlu
-                webcam = new tmImage.Webcam(200, 200, flip);
-                await webcam.setup();
-                await webcam.play();
-                document.getElementById("webcam-container").appendChild(webcam.canvas);
-
-                labelContainer = document.getElementById("label-container");
-                for (let i = 0; i < maxPredictions; i++) {
-                    labelContainer.appendChild(document.createElement("div"));
-                }
-
-                // Memulai loop untuk melakukan prediksi
-                window.requestAnimationFrame(loop);
-
-            } catch (error) {
-                console.error("Error loading model or setting up webcam:", error);
-                document.getElementById("error-message").innerText = "Terjadi kesalahan saat memuat model atau webcam.";
-            }
-        };
-
-        async function loop() {
-            webcam.update();
-            await predict();
-            window.requestAnimationFrame(loop);
-        }
-
-        async function predict() {
-            const prediction = await model.predict(webcam.canvas);
-
-            let maxAccuracy = 0;
-            let predictedClass = "";
-
-            // Menampilkan hasil prediksi
-            for (let i = 0; i < maxPredictions; i++) {
-                const className = prediction[i].className;
-                const probability = prediction[i].probability;
-
-                labelContainer.childNodes[i].innerHTML = `${className}: ${(probability * 100).toFixed(2)}%`;
-
-                // Mencari prediksi dengan akurasi tertinggi
-                if (probability > maxAccuracy) {
-                    maxAccuracy = probability;
-                    predictedClass = className;
-                }
-            }
-
-            // Jika akurasi lebih dari 80%, alihkan ke halaman details.html
-            if (maxAccuracy >= 0.8) {
-                window.location.href = `./details.html?id=${predictedClass}`;
-            }
-        }
-    </script>
+    <!-- Webcam Container -->
+  <div id="webcam-container" class="mt-6"></div>
+  <div id="label-container" class="mt-4 text-lg text-gray-700"></div>
+  <div id="error-message" class="error"></div> <!-- Tempat untuk menampilkan pesan kesalahan -->
+  <div class="mt-8">
+        <button 
+            class="bg-gray-800 text-white px-6 py-3 rounded-md text-lg font-semibold shadow hover:bg-gray-500 transition duration-300"
+            onclick="init()">
+            Start Camera
+        </button>
+    </div>
+    
+</div>
+</section>
+</div>
 </body>
 </html>
