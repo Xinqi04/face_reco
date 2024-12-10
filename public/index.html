@@ -3,87 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teachable Machine Image Model</title>
+    <title>Teachable Machine Prediction</title>
     <!-- TensorFlow.js -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <!-- Teachable Machine Image Library -->
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #webcam-container { margin: 20px; }
+        #label-container { margin: 20px; }
+        .error { color: red; }
+    </style>
 </head>
 <body>
     <h1>Teachable Machine Image Model</h1>
-    <button type="button" onclick="init()">Mulaii</button>
     <div id="webcam-container"></div>
     <div id="label-container"></div>
+    <div id="error-message" class="error"></div> <!-- Tempat untuk menampilkan pesan kesalahan -->
 
     <script>
         let model, webcam, labelContainer, maxPredictions;
 
-        async function init() {
-            console.log("Button clicked!");  // Verifikasi apakah init dipanggil
-        
-            const modelURL = "my_model/model.json";  // Pastikan ini sesuai dengan lokasi file model Anda
-            const metadataURL = "my_model/metadata.json";  // Pastikan ini sesuai dengan lokasi file metadata Anda
+        // Fungsi inisialisasi akan otomatis dijalankan saat halaman dimuat
+        window.onload = async function() {
+            const modelURL = "./my_model/model.json"; // Lokasi file model
+            const metadataURL = "./my_model/metadata.json"; // Lokasi file metadata
 
-        
             try {
-                console.log("Loading model...");
                 // Memuat model
                 model = await tmImage.load(modelURL, metadataURL);
-                console.log("Model loaded successfully!");
-        
                 maxPredictions = model.getTotalClasses();
-                console.log("Max predictions: " + maxPredictions);
-        
-                const flip = true;  // Mengaktifkan flip jika perlu
+
+                // Inisialisasi webcam
+                const flip = true; // Flip kamera jika perlu
                 webcam = new tmImage.Webcam(200, 200, flip);
-                await webcam.setup();  // Setup webcam
-                await webcam.play();  // Mulai webcam
-        
-                window.requestAnimationFrame(loop);  // Meminta frame per frame untuk prediksi
-        
-                document.getElementById("webcam-container").appendChild(webcam.canvas);  // Menampilkan webcam
-        
+                await webcam.setup();
+                await webcam.play();
+                document.getElementById("webcam-container").appendChild(webcam.canvas);
+
                 labelContainer = document.getElementById("label-container");
                 for (let i = 0; i < maxPredictions; i++) {
                     labelContainer.appendChild(document.createElement("div"));
                 }
-        
+
+                // Memulai loop untuk melakukan prediksi
+                window.requestAnimationFrame(loop);
+
             } catch (error) {
-                console.error("Error loading model:", error);
+                console.error("Error loading model or setting up webcam:", error);
+                document.getElementById("error-message").innerText = "Terjadi kesalahan saat memuat model atau webcam.";
             }
-        }
-        
+        };
+
         async function loop() {
-            webcam.update();  // Memperbarui frame dari webcam
-            await predict();  // Melakukan prediksi
-            window.requestAnimationFrame(loop);  // Lanjutkan proses prediksi
+            webcam.update();
+            await predict();
+            window.requestAnimationFrame(loop);
         }
 
         async function predict() {
             const prediction = await model.predict(webcam.canvas);
-            
-            // Menampilkan prediksi untuk masing-masing kelas
+
             let maxAccuracy = 0;
             let predictedClass = "";
+
+            // Menampilkan hasil prediksi
             for (let i = 0; i < maxPredictions; i++) {
                 const className = prediction[i].className;
                 const probability = prediction[i].probability;
-                
-                // Update label dengan prediksi
-                labelContainer.childNodes[i].innerHTML = className + ": " + probability.toFixed(2);
 
-                // Cek akurasi tertinggi
+                labelContainer.childNodes[i].innerHTML = `${className}: ${(probability * 100).toFixed(2)}%`;
+
+                // Mencari prediksi dengan akurasi tertinggi
                 if (probability > maxAccuracy) {
                     maxAccuracy = probability;
                     predictedClass = className;
                 }
             }
 
-            // Jika akurasi lebih dari 80%, alihkan ke halaman lain
+            // Jika akurasi lebih dari 80%, alihkan ke halaman details.html
             if (maxAccuracy >= 0.8) {
-                console.log(`Predicted class: ${predictedClass} with accuracy: ${maxAccuracy}`);
-                // Redirect ke halaman lain dengan mengirimkan ID atau informasi yang sesuai
-                window.location.href = `details.html?id=${predictedClass}`;
+                window.location.href = `./details.html?id=${predictedClass}`;
             }
         }
     </script>
