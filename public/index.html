@@ -41,9 +41,19 @@
             Start Camera
         </button>
     </div>
-    
 </div>
 </section>
 </div>
+<!-- Modal Konfirmasi -->
+<div id="confirmation-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+  <div class="bg-white rounded-lg p-6 shadow-lg max-w-sm w-full text-center">
+      <p id="modal-message" class="text-lg font-semibold mb-4"></p>
+      <div class="flex justify-center space-x-4">
+          <button id="confirm-btn" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Ya</button>
+          <button id="cancel-btn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Tidak</button>
+      </div>
+  </div>
+</div>
+
 </body>
 </html>

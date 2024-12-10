@@ -38,6 +38,7 @@ async function loop() {
     window.requestAnimationFrame(loop);
 }
 
+
 async function predict() {
     const prediction = await model.predict(webcam.canvas);
 
@@ -58,8 +59,55 @@ async function predict() {
         }
     }
 
-    // Jika akurasi lebih dari 80%, alihkan ke halaman details.html
+    // Jika akurasi lebih dari 85%, tampilkan modal konfirmasi
     if (maxAccuracy >= 0.85) {
-        window.location.href = `./details.html?id=${predictedClass}`;
+        const modal = document.getElementById("confirmation-modal");
+        const modalMessage = document.getElementById("modal-message");
+        const confirmBtn = document.getElementById("confirm-btn");
+        const cancelBtn = document.getElementById("cancel-btn");
+
+        // Perbarui pesan modal
+        modalMessage.innerText = `Apakah ini Anda: ${predictedClass}?`;
+        
+        // Tampilkan modal
+        modal.classList.remove("hidden");
+
+        // Event listener untuk tombol konfirmasi
+        confirmBtn.onclick = () => {
+            modal.classList.add("hidden");
+            window.location.href = `./details.html?id=${predictedClass}`;
+        };
+
+        // Event listener untuk tombol batal
+        cancelBtn.onclick = () => {
+            modal.classList.add("hidden");
+            console.log("Pengguna membatalkan konfirmasi.");
+        };
     }
 }
+
+// async function predict() {
+//     const prediction = await model.predict(webcam.canvas);
+
+//     let maxAccuracy = 0;
+//     let predictedClass = "";
+
+//     // Menampilkan hasil prediksi
+//     for (let i = 0; i < maxPredictions; i++) {
+//         const className = prediction[i].className;
+//         const probability = prediction[i].probability;
+
+//         labelContainer.childNodes[i].innerHTML = `${className}: ${(probability * 100).toFixed(2)}%`;
+
+//         // Mencari prediksi dengan akurasi tertinggi
+//         if (probability > maxAccuracy) {
+//             maxAccuracy = probability;
+//             predictedClass = className;
+//         }
+//     }
+
+//     // Jika akurasi lebih dari 80%, alihkan ke halaman details.html
+//     if (maxAccuracy >= 0.85) {
+//         window.location.href = `./details.html?id=${predictedClass}`;
+//     }
+// }
