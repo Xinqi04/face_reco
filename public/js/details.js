@@ -41,7 +41,7 @@ async function loadData() {
         if (data.riwayatPenyakit && data.riwayatPenyakit.length > 0) {
             data.riwayatPenyakit.forEach((entry) => {
                 const div = document.createElement('div');
-                div.classList.add('border', 'border-gray-300', 'p-4', 'mb-4', 'rounded');
+                div.classList.add('border', 'border-gray-300', 'p-4', 'mb-4', 'rounded', 'bg-white');
                 div.innerHTML = `
                     <p><strong>Tanggal:</strong> ${entry.Tanggal_Kunjungan}</p>
                     <p><strong>Diagnosa:</strong> ${entry.Diagnosa}</p>
